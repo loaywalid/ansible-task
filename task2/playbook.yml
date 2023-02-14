@@ -1,0 +1,47 @@
+- name: deploy django app      
+  hosts: ansible1               
+  become: true 
+  tasks:
+    - name: sudo apt update
+      apt:
+        update_cache: yes
+    
+    - name: install pip3 
+      apt:
+        name: python3-pip
+        state: present
+    
+    - name: install zip
+      apt:
+        name: zip
+        state: present
+
+    - name: copy project
+      copy: 
+        src: ./Booster_CI_CD_Project-master.zip
+        dest: /home/ubuntu/
+
+    - name: extract project file
+      unarchive:
+       src: /home/ubuntu/Booster_CI_CD_Project-master.zip
+       dest: /home/ubuntu/
+       remote_src: yes
+    
+    - name: Remove project zip file
+      file:
+         path: /home/ubuntu/Booster_CI_CD_Project-master.zip
+         state: absent
+
+    - name: Install required packages
+      pip:
+        requirements: /home/ubuntu/Booster_CI_CD_Project-master/requirements.txt
+        executable: pip3
+    
+    - name: make migrations for DB
+      command: python3 /home/ubuntu/Booster_CI_CD_Project-master/manage.py makemigrations
+
+    - name: apply the migrations
+      command: python3 /home/ubuntu/Booster_CI_CD_Project-master/manage.py migrate
+    
+    - name: start the server
+      command: python3 /home/ubuntu/Booster_CI_CD_Project-master/manage.py runserver 0.0.0.0:8000
