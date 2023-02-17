@@ -1,0 +1,5 @@
+[bastion_machine]
+ bastion ansible_host=52.53.215.155 ansible_user=ubuntu ansible_ssh_private_key_file=./ansiblekey.pem ansible_port=22
+[private_machines]
+ private_instance1 ansible_host=10.0.1.54 ansible_user=ubuntu ansible_ssh_private_key_file=./ansiblekey.pem ansible_ssh_common_args='-o ProxyCommand="ssh bastion -W %h:%p"' ansible_port=22
+ private_instance2 ansible_host=10.0.3.204 ansible_user=ubuntu ansible_ssh_private_key_file=./ansiblekey.pem ansible_ssh_common_args='-o ProxyCommand="ssh bastion -W %h:%p"' ansible_port=22
